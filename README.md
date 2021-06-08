@@ -7,9 +7,9 @@ by Tianxin Wei, Fuli Feng, Jiawei Chen, Ziwei Wu, Jinfeng Yi and Xiangnan He bas
 # Introduction
 MACR is a general popularity debias framework based on causal inference and counterfactual reasoning.
 # Requirements
-tensorflow == 1.14
-Numpy
-python3
+* tensorflow == 1.14
+* Numpy
+* python3
 # Datasets
 We use several recommendation datasets in the following format:
 * train.txt: Biased training data. Each line is user ID, item ID.
