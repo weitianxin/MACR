@@ -1,9 +1,9 @@
 # MACR
-This is an implemention for our SIGKDD 2021 paper 
+This is an implemention for our SIGKDD 2021 paper based on tensorflow
 
 [Model-Agnostic Counterfactual Reasoning for Eliminating Popularity Bias in Recommender System](https://arxiv.org/abs/2010.15363)
 
-by Tianxin Wei, Fuli Feng, Jiawei Chen, Ziwei Wu, Jinfeng Yi and Xiangnan He based on tensorflow.
+by Tianxin Wei, Fuli Feng, Jiawei Chen, Ziwei Wu, Jinfeng Yi and Xiangnan He.
 # Introduction
 MACR is a general popularity debias framework based on causal inference and counterfactual reasoning.
 # Requirements
