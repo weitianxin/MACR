@@ -25,7 +25,7 @@ If you find this paper helpful, please cite our paper.
 @inproceedings{wei2021model,
   title={Model-Agnostic Counterfactual Reasoning for Eliminating Popularity Bias in Recommender System},
   author={Wei, Tianxin and Feng, Fuli and Chen, Jiawei and Wu, Ziwei and Yi, Jinfeng and He, Xiangnan},
-  booktitle={Proceedings of the 25th ACM SIGKDD International Conference on Knowledge Discovery \& Data Mining},
+  booktitle={Proceedings of the 27th ACM SIGKDD International Conference on Knowledge Discovery \& Data Mining},
   year={2021}
 }
 ```
