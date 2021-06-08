@@ -22,10 +22,10 @@ python ./macr_mf/train.py --dataset addressa --batch_size 128 --cuda 1 --pretrai
 # Citation
 If you find this paper helpful, please cite our paper.
 ```
-@inproceedings{niu2020counterfactual,
-  title={Counterfactual VQA: A Cause-Effect Look at Language Bias},
-  author={Niu, Yulei and Tang, Kaihua and Zhang, Hanwang and Lu, Zhiwu and Hua, Xian-Sheng and Wen, Ji-Rong},
-  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+@inproceedings{wei2021model,
+  title={Model-Agnostic Counterfactual Reasoning for Eliminating Popularity Bias in Recommender System},
+  author={Wei, Tianxin and Feng, Fuli and Chen, Jiawei and Wu, Ziwei and Yi, Jinfeng and He, Xiangnan},
+  booktitle={Proceedings of the 25th ACM SIGKDD International Conference on Knowledge Discovery \& Data Mining},
   year={2021}
 }
 ```
