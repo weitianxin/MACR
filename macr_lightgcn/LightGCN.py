@@ -655,7 +655,7 @@ if __name__ == '__main__':
     *********************************************************
     Generate the Laplacian matrix, where each entry defines the decay factor (e.g., p_ui) between two connected nodes.
     """
-    plain_adj, norm_adj, mean_adj,pre_adj = data_generator.get_adj_mat()
+    plain_adj, norm_adj, mean_adj, pre_adj = data_generator.get_adj_mat()
     if args.adj_type == 'plain':
         config['norm_adj'] = plain_adj
         print('use the plain adjacency matrix')
@@ -691,8 +691,6 @@ if __name__ == '__main__':
         ensureDir(weights_save_path)
         save_saver = tf.train.Saver(max_to_keep=20000)
 
-    
-
     """
     *********************************************************
     Reload the pretrained model parameters.
@@ -701,6 +699,7 @@ if __name__ == '__main__':
     if args.pretrain == 1:
 
         # normal
+
         # model_file = "../weights/addressa/LightGCN/64-64/l0.001_r1e-05-1e-05-0.01/weights_gcnnormal-300"
         # users_to_test = list(data_generator.test_set.keys())
         # saver.restore(sess, model_file)
@@ -709,9 +708,10 @@ if __name__ == '__main__':
         #                                     str(ret['hr']), str(ret['ndcg']))
         # print(perf_str)
         # exit()
+
         # MACR
-        model_file = "../weights/addressa/LightGCN/64-64/l0.001_r1e-05-1e-05-0.01/weights_gcn3branch_0-240"
-        best_c = 45
+        model_file = "Your Path"
+        best_c = 45 # value of c
         users_to_test = list(data_generator.test_set.keys())
         saver.restore(sess, model_file)
         for c in [0, best_c]:
@@ -721,65 +721,11 @@ if __name__ == '__main__':
                                              str(ret['hr']), str(ret['ndcg']))
             print(perf_str)
         exit()
-        # layer = '-'.join([str(l) for l in eval(args.layer_size)])
-
-        # pretrain_path = '%sweights/%s/%s/%s/l%s_r%s' % (args.weights_path, args.dataset, model.model_type, layer,
-        #                                                 str(args.lr), '-'.join([str(r) for r in eval(args.regs)]))
-
-
-        # ckpt = tf.train.get_checkpoint_state(os.path.dirname(pretrain_path + '/checkpoint'))
-        # if ckpt and ckpt.model_checkpoint_path:
-        #     sess.run(tf.global_variables_initializer())
-        #     saver.restore(sess, ckpt.model_checkpoint_path)
-        #     print('load the pretrained model parameters from: ', pretrain_path)
-
-        #     # *********************************************************
-        #     # get the performance from pretrained model.
-        #     if args.report != 1:
-        #         users_to_test = list(data_generator.test_set.keys())
-        #         ret = test(sess, model, users_to_test, drop_flag=True)
-        #         cur_best_pre_0 = ret['recall'][0]
-                
-        #         pretrain_ret = 'pretrained model recall=[%s], hr=[%s], '\
-        #                        'ndcg=[%s]' % \
-        #                        (', '.join(['%.5f' % r for r in ret['recall']]),
-        #                         ', '.join(['%.5f' % r for r in ret['hr']]),
-        #                         ', '.join(['%.5f' % r for r in ret['ndcg']]))
-        #         print(pretrain_ret)
 
     elif args.pretrain == 0:
         sess.run(tf.global_variables_initializer())
         cur_best_pre_0 = 0.
         print('without pretraining.')
-
-    """
-    *********************************************************
-    Get the performance w.r.t. different sparsity levels.
-    """
-    if args.report == 1:
-        assert args.test_flag == 'full'
-        users_to_test_list, split_state = data_generator.get_sparsity_split()
-        users_to_test_list.append(list(data_generator.test_set.keys()))
-        split_state.append('all')
-         
-        report_path = '%sreport/%s/%s.result' % (args.proj_path, args.dataset, model.model_type)
-        ensureDir(report_path)
-        f = open(report_path, 'w')
-        f.write(
-            'embed_size=%d, lr=%.4f, layer_size=%s, keep_prob=%s, regs=%s, loss_type=%s, adj_type=%s\n'
-            % (args.embed_size, args.lr, args.layer_size, args.keep_prob, args.regs, args.loss_type, args.adj_type))
-
-        for i, users_to_test in enumerate(users_to_test_list):
-            ret = test(sess, model, users_to_test, drop_flag=True)
-
-            final_perf = "recall=[%s], hr=[%s], ndcg=[%s]" % \
-                         (', '.join(['%.5f' % r for r in ret['recall']]),
-                          ', '.join(['%.5f' % r for r in ret['hr']]),
-                          ', '.join(['%.5f' % r for r in ret['ndcg']]))
-
-            f.write('\t%s\n\t%s\n' % (split_state[i], final_perf))
-        f.close()
-        exit()
 
     """
     *********************************************************
@@ -816,7 +762,7 @@ if __name__ == '__main__':
             loss_test,mf_loss_test,emb_loss_test,reg_loss_test=0.,0.,0.,0.
             '''
             *********************************************************
-            parallelized sampling
+            parallelized train sampling
             '''
             sample_last = sample_thread()
             sample_last.start()
@@ -839,15 +785,9 @@ if __name__ == '__main__':
                 mf_loss += batch_mf_loss/n_batch
                 emb_loss += batch_emb_loss/n_batch
                 
-            # summary_train_loss= sess.run(model.merged_train_loss,
-            #                               feed_dict={model.train_loss: loss, model.train_mf_loss: mf_loss,
-            #                                          model.train_emb_loss: emb_loss, model.train_reg_loss: reg_loss})
-            # train_writer.add_summary(summary_train_loss, epoch)
             if np.isnan(loss) == True:
                 print('ERROR: loss is nan.')
                 sys.exit()
-            # print("1:")
-            # data_generator.check()
             if (epoch % args.log_interval) != 0:
                 if args.verbose > 0 and epoch % args.verbose == 0:
                     perf_str = 'Epoch %d [%.1fs]: train==[%.5f=%.5f + %.5f]' % (
@@ -870,12 +810,13 @@ if __name__ == '__main__':
             
             '''
             *********************************************************
-            parallelized sampling
+            parallelized test sampling
             '''
-
+            # test loss
             sample_last= sample_thread_test()
             sample_last.start()
             sample_last.join()
+            loss_test,mf_loss_test,emb_loss_test,reg_loss_test=0.,0.,0.,0.
             for idx in range(n_batch):
                 train_cur = train_thread_test(model, sess, sample_last, args)
                 sample_next = sample_thread_test()
@@ -905,7 +846,6 @@ if __name__ == '__main__':
             perf_str = ''
             if args.test == 'normal':
                 ret = test(sess, model, users_to_test, drop_flag=True)                                                                                 
-                                                                                                 
                 t3 = time()
                 
                 loss_loger.append(loss)
@@ -1019,143 +959,143 @@ if __name__ == '__main__':
 
 
 
-    if args.out == 1:
-        best_epoch = 0
-        best_c=0
-        with open(weights_save_path+'/best_epoch_{}.txt'.format(args.saveID),'r') as f:
-            best_epoch = eval(f.read())
-        model_file = weights_save_path + '/weights_{}-{}'.format(args.saveID,best_epoch)
-        save_saver.restore(sess, model_file)
-        if args.test == 'rubiboth':
-            with open(weights_save_path+'/best_c_{}.txt'.format(args.saveID),'r') as f:
-                best_c = eval(f.read())
-            model.update_c(sess, best_c)
+    # if args.out == 1:
+    #     best_epoch = 0
+    #     best_c=0
+    #     with open(weights_save_path+'/best_epoch_{}.txt'.format(args.saveID),'r') as f:
+    #         best_epoch = eval(f.read())
+    #     model_file = weights_save_path + '/weights_{}-{}'.format(args.saveID,best_epoch)
+    #     save_saver.restore(sess, model_file)
+    #     if args.test == 'rubiboth':
+    #         with open(weights_save_path+'/best_c_{}.txt'.format(args.saveID),'r') as f:
+    #             best_c = eval(f.read())
+    #         model.update_c(sess, best_c)
 
-            print(best_epoch, best_c)
+    #         print(best_epoch, best_c)
 
 
-        test_users = list(data_generator.test_set.keys())
-        n_test_users = len(test_users)
-        u_batch_size = BATCH_SIZE
-        n_user_batchs = n_test_users // u_batch_size + 1
+    #     test_users = list(data_generator.test_set.keys())
+    #     n_test_users = len(test_users)
+    #     u_batch_size = BATCH_SIZE
+    #     n_user_batchs = n_test_users // u_batch_size + 1
         
-        total_rate = np.empty(shape=[0, ITEM_NUM])
-        item_batch = list(range(ITEM_NUM))
-        for u_batch_id in range(n_user_batchs):
-            start = u_batch_id * u_batch_size
-            end = (u_batch_id + 1) * u_batch_size
+    #     total_rate = np.empty(shape=[0, ITEM_NUM])
+    #     item_batch = list(range(ITEM_NUM))
+    #     for u_batch_id in range(n_user_batchs):
+    #         start = u_batch_id * u_batch_size
+    #         end = (u_batch_id + 1) * u_batch_size
 
-            user_batch = test_users[start: end]
-            if args.test=="normal":
-                rate_batch = sess.run(model.batch_ratings, {model.users: user_batch,
-                                                                model.pos_items: item_batch})
+    #         user_batch = test_users[start: end]
+    #         if args.test=="normal":
+    #             rate_batch = sess.run(model.batch_ratings, {model.users: user_batch,
+    #                                                             model.pos_items: item_batch})
 
-            elif args.test == 'rubiboth':
-                rate_batch = sess.run(model.rubi_ratings_both, {model.users: user_batch,
-                                                                    model.pos_items: item_batch})
+    #         elif args.test == 'rubiboth':
+    #             rate_batch = sess.run(model.rubi_ratings_both, {model.users: user_batch,
+    #                                                                 model.pos_items: item_batch})
 
-            total_rate = np.vstack((total_rate, rate_batch))
+    #         total_rate = np.vstack((total_rate, rate_batch))
         
-        total_sorted_id = np.argsort(-total_rate, axis=1)
-        count = np.zeros(shape=[ITEM_NUM])
-        for user, line in enumerate(total_sorted_id):
-            # cutline = line[:10]
-            # for item in cutline:
-            #     count[item] += 1
-            n = 0
-            for item in line:
-                if user not in data_generator.train_items.keys() or item not in data_generator.train_items[user]:
-                    count[item] += 1
-                    n += 1
-                if n == 10:
-                    break
+    #     total_sorted_id = np.argsort(-total_rate, axis=1)
+    #     count = np.zeros(shape=[ITEM_NUM])
+    #     for user, line in enumerate(total_sorted_id):
+    #         # cutline = line[:10]
+    #         # for item in cutline:
+    #         #     count[item] += 1
+    #         n = 0
+    #         for item in line:
+    #             if user not in data_generator.train_items.keys() or item not in data_generator.train_items[user]:
+    #                 count[item] += 1
+    #                 n += 1
+    #             if n == 10:
+    #                 break
 
 
 
-        usersorted_id = []
-        userbelong = []
-        sorted_id = []
-        belong = []
-        with open('./curve/usersorted_id.txt','r') as f:
-            usersorted_id=eval(f.read())
-        with open('./curve/userbelong.txt','r') as f:
-            userbelong=eval(f.read())
-        with open('./curve/itembelong.txt','r') as f:
-            belong=eval(f.read())
-        with open('./curve/itemsorted_id.txt','r') as f:
-            sorted_id=eval(f.read())
+    #     usersorted_id = []
+    #     userbelong = []
+    #     sorted_id = []
+    #     belong = []
+    #     with open('./curve/usersorted_id.txt','r') as f:
+    #         usersorted_id=eval(f.read())
+    #     with open('./curve/userbelong.txt','r') as f:
+    #         userbelong=eval(f.read())
+    #     with open('./curve/itembelong.txt','r') as f:
+    #         belong=eval(f.read())
+    #     with open('./curve/itemsorted_id.txt','r') as f:
+    #         sorted_id=eval(f.read())
 
-        count = count[sorted_id]
-        x = list(range(6))
-        y = [0,0,0,0,0,0]
-        n_y = [0,0,0,0,0,0]
-        for n, pop in enumerate(count):
-            y[belong[n]] += pop
-            n_y[belong[n]] += 1
-        for i in range(6):
-            y[i]/=1.0*n_y[i]
+    #     count = count[sorted_id]
+    #     x = list(range(6))
+    #     y = [0,0,0,0,0,0]
+    #     n_y = [0,0,0,0,0,0]
+    #     for n, pop in enumerate(count):
+    #         y[belong[n]] += pop
+    #         n_y[belong[n]] += 1
+    #     for i in range(6):
+    #         y[i]/=1.0*n_y[i]
 
-        with open('./curve/gcny_{}.txt'.format(args.loss), 'w') as f:
-            f.write(str(y))
+    #     with open('./curve/gcny_{}.txt'.format(args.loss), 'w') as f:
+    #         f.write(str(y))
         
 
-        if args.test == 'rubiboth':
-            sig_yu, sig_yi = sess.run([model.sigmoid_yu, model.sigmoid_yi])
+    #     if args.test == 'rubiboth':
+    #         sig_yu, sig_yi = sess.run([model.sigmoid_yu, model.sigmoid_yi])
 
-            sig_sum = [0,0,0,0,0,0]
-            n_sig = [0,0,0,0,0,0]
+    #         sig_sum = [0,0,0,0,0,0]
+    #         n_sig = [0,0,0,0,0,0]
 
-            sig_yu = sig_yu[usersorted_id]
-            for i, sig in enumerate(sig_yu):
-                sig_sum[userbelong[i]] += sig
-                n_sig[userbelong[i]] += 1
+    #         sig_yu = sig_yu[usersorted_id]
+    #         for i, sig in enumerate(sig_yu):
+    #             sig_sum[userbelong[i]] += sig
+    #             n_sig[userbelong[i]] += 1
                 
-            for i in range(6):
-                sig_sum[i]/=1.0*n_sig[i]
+    #         for i in range(6):
+    #             sig_sum[i]/=1.0*n_sig[i]
                 
-            with open('./curve/sig_yu_gcn.txt', 'w') as f:
-                f.write(str(sig_sum))
+    #         with open('./curve/sig_yu_gcn.txt', 'w') as f:
+    #             f.write(str(sig_sum))
 
-            sig_sum = [0,0,0,0,0,0]
-            n_sig = [0,0,0,0,0,0]
+    #         sig_sum = [0,0,0,0,0,0]
+    #         n_sig = [0,0,0,0,0,0]
 
-            sig_yi = sig_yi[sorted_id]
-            for i, sig in enumerate(sig_yi):
-                sig_sum[belong[i]] += sig
-                n_sig[belong[i]] += 1
+    #         sig_yi = sig_yi[sorted_id]
+    #         for i, sig in enumerate(sig_yi):
+    #             sig_sum[belong[i]] += sig
+    #             n_sig[belong[i]] += 1
                 
-            for i in range(6):
-                sig_sum[i]/=1.0*n_sig[i]
+    #         for i in range(6):
+    #             sig_sum[i]/=1.0*n_sig[i]
                 
-            with open('./curve/sig_yi_gcn.txt', 'w') as f:
-                f.write(str(sig_sum))
+    #         with open('./curve/sig_yi_gcn.txt', 'w') as f:
+    #             f.write(str(sig_sum))
 
-            import matplotlib.pyplot as plt
-            import matplotlib
-            matplotlib.rcParams['figure.figsize'] = [10.5,6.5] # for square canvas
-            matplotlib.rcParams['figure.subplot.left'] = 0.2
-            matplotlib.rcParams['figure.subplot.bottom'] =0.1
-            matplotlib.rcParams['figure.subplot.right'] = 0.8
-            matplotlib.rcParams['figure.subplot.top'] = 0.8
+    #         import matplotlib.pyplot as plt
+    #         import matplotlib
+    #         matplotlib.rcParams['figure.figsize'] = [10.5,6.5] # for square canvas
+    #         matplotlib.rcParams['figure.subplot.left'] = 0.2
+    #         matplotlib.rcParams['figure.subplot.bottom'] =0.1
+    #         matplotlib.rcParams['figure.subplot.right'] = 0.8
+    #         matplotlib.rcParams['figure.subplot.top'] = 0.8
 
-            plt.switch_backend('agg')
-            x = np.linspace(0, 60, 41)
-            y = []
-            for c in x:
-                model.update_c(sess, c)
-                test_users = list(data_generator.test_set.keys())
-                ret = test(sess, model, test_users, method=args.test)
-                y.append(ret['hr'][0])
-            plt.plot(x, y, color='sandybrown')
-            plt.scatter(x, y, color='sandybrown')
-            plt.grid(alpha=0.3)
-            plt.xlabel('c', size=24, fontweight='bold')
-            plt.ylabel('HR@20', size=24, fontweight='bold')
-            plt.xticks(size=16, fontweight='bold')
-            plt.yticks(size = 16, fontweight='bold')
+    #         plt.switch_backend('agg')
+    #         x = np.linspace(0, 60, 41)
+    #         y = []
+    #         for c in x:
+    #             model.update_c(sess, c)
+    #             test_users = list(data_generator.test_set.keys())
+    #             ret = test(sess, model, test_users, method=args.test)
+    #             y.append(ret['hr'][0])
+    #         plt.plot(x, y, color='sandybrown')
+    #         plt.scatter(x, y, color='sandybrown')
+    #         plt.grid(alpha=0.3)
+    #         plt.xlabel('c', size=24, fontweight='bold')
+    #         plt.ylabel('HR@20', size=24, fontweight='bold')
+    #         plt.xticks(size=16, fontweight='bold')
+    #         plt.yticks(size = 16, fontweight='bold')
 
-            plt.savefig('./curve/hr_addressa_causalgcn.png')
-            plt.cla()
+    #         plt.savefig('./curve/hr_addressa_causalgcn.png')
+    #         plt.cla()
 
 
 

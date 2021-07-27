@@ -111,9 +111,8 @@ def test(sess, model, users_to_test, drop_flag=False, train_set_flag=0, method="
             for i in K_max_item_score:
                 if i in user_pos_test:
                     item_acc_list[i] += 1/len(data_generator.test_item_set[i])
-        with open("Lightgcn_macr.txt","w") as f:
+        with open("Lightgcn_macr.txt","w+") as f:
             f.write(str(item_acc_list))
-        exit()
         test_items = []
         if train_set_flag == 0:
             for user in user_batch:

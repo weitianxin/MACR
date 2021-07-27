@@ -5,11 +5,11 @@ def parse_args():
     parser.add_argument('--data_path', nargs='?', default='./data/',
                         help='Input data path.')
     parser.add_argument('--dataset', nargs='?', default='movielens_ml_1m',
-                        help='Choose a dataset from {movielens_ml_1m, movielens_ml_10m, gowalla}')
+                        help='Choose a dataset')
     parser.add_argument('--source', nargs='?', default='normal',
     help='normal | dice')
-    parser.add_argument('--train', nargs='?', default='normal',
-    help='normal | rubi')
+    parser.add_argument('--train', nargs='?', default='normalbce',
+    help='normalbce | rubibceboth')
     parser.add_argument('--test', nargs='?', default='normal',
     help='normal | rubi')
     parser.add_argument('--valid_set', nargs='?', default='test',
@@ -28,7 +28,7 @@ def parse_args():
                         help='Embedding size.')
     parser.add_argument('--batch_size', type=int, default=1024,
                         help='Batch size.')
-    parser.add_argument('--Ks', nargs='?', default='[1,5,10,15,20,30,50]',
+    parser.add_argument('--Ks', nargs='?', default='[20]',
                         help='Evaluate on Ks optimal items.')
     parser.add_argument('--epochs', nargs='?', default='[]',
                         help='Test c on these epochs.')
@@ -46,8 +46,8 @@ def parse_args():
                         help='Specify model type, choose from {mf, CausalE}')
     parser.add_argument('--skew', type=int, default=0,
                         help='Use not skewed dataset.')
-    parser.add_argument('--model_type', nargs='?', default='o',
-                        help='Specify model type, choose from {o, c, ic, rc, irc}')
+    # parser.add_argument('--model_type', nargs='?', default='o',
+    #                     help='Specify model type, choose from {o, c, ic, rc, irc}')
     parser.add_argument('--devide_ratio', type=float, default=0.8,
                         help='Train/Test.')
     parser.add_argument('--save_flag', type=int, default=1,

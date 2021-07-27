@@ -64,48 +64,47 @@ class Data():
                         self.n_users = max(self.n_users, user)
                         self.n_items = max(self.n_items, max(items))
                         self.n_train += len(items)
-
-                with open(valid_file) as f:
-                    for line in f.readlines():
-                        line = line.strip('\n').split(' ')
-                        if len(line) == 0:
-                            continue
-                        line = [int(i) for i in line]
-                        user = line[0]
-                        items = line[1:]
-                        if len(items) == 0:
-                            continue
-                        self.valid_user_list[user] = items
-                        self.valid_items.update(set(items))
-                        for item in items:
-                            self.valid_item_list[item].append(user)
-                        self.n_users = max(self.n_users, user)
-                        self.n_items = max(self.n_items, max(items))
-                        self.n_valid += len(items)
-
-                with open(test_file) as f:
-                    for line in f.readlines():
-                        line = line.strip('\n').split(' ')
-                        if len(line) == 0:
-                            continue
-                        line = [int(i) for i in line]
-                        user = line[0]
-                        items = line[1:]
-                        if len(items) == 0:
-                            continue
-                        self.test_user_list[user] = items
-                        for item in items:
-                            self.test_item_list[item].append(user)
-                        self.n_users = max(self.n_users, user)
-                        self.n_items = max(self.n_items, max(items))
-                        self.n_test += len(items)
-                print(self.n_train,self.n_valid,self.n_test)
+                if args.valid_set=="valid":
+                    with open(valid_file) as f:
+                        for line in f.readlines():
+                            line = line.strip('\n').split(' ')
+                            if len(line) == 0:
+                                continue
+                            line = [int(i) for i in line]
+                            user = line[0]
+                            items = line[1:]
+                            if len(items) == 0:
+                                continue
+                            self.valid_user_list[user] = items
+                            self.valid_items.update(set(items))
+                            for item in items:
+                                self.valid_item_list[item].append(user)
+                            self.n_users = max(self.n_users, user)
+                            self.n_items = max(self.n_items, max(items))
+                            self.n_valid += len(items)
+                    self.valid_users = set(self.valid_user_list.keys())
+                if args.valid_set=="test":
+                    with open(test_file) as f:
+                        for line in f.readlines():
+                            line = line.strip('\n').split(' ')
+                            if len(line) == 0:
+                                continue
+                            line = [int(i) for i in line]
+                            user = line[0]
+                            items = line[1:]
+                            if len(items) == 0:
+                                continue
+                            self.test_user_list[user] = items
+                            for item in items:
+                                self.test_item_list[item].append(user)
+                            self.n_users = max(self.n_users, user)
+                            self.n_items = max(self.n_items, max(items))
+                            self.n_test += len(items)
+                    self.test_users = set(self.test_user_list.keys())
                 self.n_users = self.n_users + 1
                 self.n_items = self.n_items + 1
                 self.users = list(range(self.n_users))
                 self.items = list(range(self.n_items))
-
-
                 # for i in range(self.n_users):
                 #     for item in self.train_user_list[i]:
                 #         self.train_item_list[item].append(i)
@@ -116,8 +115,7 @@ class Data():
                 #     self.n_train += len(self.train_user_list[i])
                 #     self.n_test += len(self.test_user_list[i])
                 #     self.n_valid += len(self.valid_user_list[i])
-                self.valid_users = set(self.valid_user_list.keys())
-                self.test_users = set(self.test_user_list.keys())
+                
         elif args.model == 'CausalE' or args.model == 'IPSmf':
             if args.dataset == 'movielens_ml_10m' or args.dataset == 'movielens_ml_1m' or args.dataset == 'lastfm' or args.dataset == 'addressa'\
                                                                     or args.dataset == 'kwai' or args.dataset == 'globe':

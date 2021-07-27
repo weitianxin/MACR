@@ -16,3 +16,6 @@ python ./code_temp/train.py --dataset addressa --epoch 2000 --regs 1e-5 --save_f
 
 
 python ./code_temp/train.py --dataset addressa --epoch 2000 --regs 1e-5 --save_flag 1 --log_interval 10 --start 0 --end 100 --step 7 --batch_size 1024 --lr 1e-3 --cuda 2 --train rubibceboth --test rubi --saveID 3branch --pretrain 1
+
+
+python ./macr_mf/train.py --dataset addressa --batch_size 128 --cuda 1 --saveID 1 --log_interval 1 --lr 0.001 --check_c 1 --start -1 --end 1 --step 21 --train normalbce --test normal

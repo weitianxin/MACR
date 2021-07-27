@@ -17,7 +17,7 @@ def parse_args():
                         help='Project path.')
 
     parser.add_argument('--dataset', nargs='?', default='gowalla',
-                        help='Choose a dataset from {gowalla, yelp2018, amazon-book}')
+                        help='Choose a dataset')
     parser.add_argument('--pretrain', type=int, default=0,
                         help='0: No pretrain, -1: Pretrain with the learned embeddings, 1:Pretrain with stored models.')
     parser.add_argument('--verbose', type=int, default=1,
@@ -38,6 +38,8 @@ def parse_args():
                         help='Regularizations.')
     parser.add_argument('--lr', type=float, default=0.01,
                         help='Learning rate.')
+    parser.add_argument('--c', type=float, default=-1,
+                        help='Value of C. -1 means automatic selection')
 
     parser.add_argument('--model_type', nargs='?', default='lightgcn',
                         help='Specify the name of model (lightgcn).')
@@ -65,8 +67,6 @@ def parse_args():
     parser.add_argument('--test_flag', nargs='?', default='part',
                         help='Specify the test type from {part, full}, indicating whether the reference is done in mini-batch')
 
-    parser.add_argument('--report', type=int, default=0,
-                        help='0: Disable performance report w.r.t. sparsity levels, 1: Show performance report w.r.t. sparsity levels')
 
     parser.add_argument('--saveID', nargs='?', default='',
                         help='Specify model save path.')
@@ -87,7 +87,7 @@ def parse_args():
     parser.add_argument('--beta', type=float, default=1e-3,
                         help='alpha')
     parser.add_argument('--test', nargs='?', default='normal',
-                        help='test')
+                        help='test:normal | rubiboth')
     parser.add_argument('--early_stop', type = int, default = 1,
                         help = 'early_stop') 
     parser.add_argument('--start', type=float, default=-1.,
