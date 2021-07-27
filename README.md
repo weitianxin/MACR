@@ -41,7 +41,7 @@ python macr_lightgcn/LightGCN.py --data_path data/ --dataset addressa --verbose 
 
 More details and changes will be added soon.
 # Acknowledgement 
-Very thanks for Chufeng Shi for his help on code and the LightGCN code repo.
+Very thanks for Chufeng Shi for his help on code and the [LightGCN](https://github.com/kuandeng/LightGCN) code repo.
 # Citation
 If you find this paper helpful, please cite our paper.
 ```
