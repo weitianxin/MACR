@@ -11,6 +11,11 @@ MACR is a general popularity debias framework based on causal inference and coun
 * Numpy
 * python3
 * Cython
+For LightGCN C++ evaluation, please do
+```Python
+cd macr_lightgcn
+python setup.py build_ext --inplace
+```
 # Datasets
 We use several recommendation datasets in the following format:
 * train.txt: Biased training data. Each line is user ID, item ID.
