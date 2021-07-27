@@ -16,7 +16,7 @@ We use several recommendation datasets in the following format:
 * train.txt: Biased training data. Each line is user ID, item ID.
 * tesst.txt: Unbiased uniform test data. Each line is user ID, item ID.
 # Run the code
-For example:
+For example:\\
 Normal MF:
 ```Python
 python ./macr_mf/train.py --dataset addressa --batch_size 128 --cuda 1 --saveID 1 --log_interval 10 --lr 0.001 --train normalbce --test normal
@@ -34,7 +34,7 @@ MACR LightGCN:
 ```Python
 python macr_lightgcn/LightGCN.py --data_path data/ --dataset addressa --verbose 1 --layer_size [64,64] --Ks [20] --loss bceboth --test rubiboth --start 0 --end 50 --step 31 --epoch 2000 --early_stop 1 --lr 0.001 --batch_size 1024 --gpu_id 1 --log_interval 10 --alpha 1e-3 --beta 1e-3
 ```
-(The range of counterfactual C's value needs to be set.)
+(The range of counterfactual C's value needs to be set.)\\
 More details and changes will be added soon.
 # Acknowledgement 
 Very thanks for Chufeng Shi for his help on code and the LightGCN code repo.
