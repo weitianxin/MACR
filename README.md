@@ -30,25 +30,25 @@ MACR MF:
 
 ML10M
 ```Python
-python ./macr_mf/train.py --dataset ml_10m --batch_size 8192 --cuda 0 --saveID 0 --log_interval 20 --lr 0.001 --check_c 1 --start 30 --end 31 --step 1 --train rubibceboth --test rubi --alpha 1e-3 --beta 1e-3
+python ./macr_mf/train.py --dataset ml_10m --batch_size 8192 --cuda 0 --saveID 0 --log_interval 10 --lr 0.001 --check_c 1 --start 30 --end 31 --step 1 --train rubibceboth --test rubi --alpha 1e-3 --beta 1e-3
 ```
 ![mf_ml10m](https://user-images.githubusercontent.com/37143015/131950971-71a1707f-30bb-4f89-bc3c-03d805414aca.png)
 
 Gowalla
 ```Python
-python ./macr_mf/train.py --dataset gowalla --batch_size 4096 --cuda 0 --saveID 0 --log_interval 20 --lr 0.001 --check_c 1 --start 40 --end 41 --step 1 --train rubibceboth --test rubi --alpha 1e-2 --beta 1e-3
+python ./macr_mf/train.py --dataset gowalla --batch_size 4096 --cuda 0 --saveID 0 --log_interval 10 --lr 0.001 --check_c 1 --start 40 --end 41 --step 1 --train rubibceboth --test rubi --alpha 1e-2 --beta 1e-3
 ```
 ![image12](https://user-images.githubusercontent.com/37143015/131951141-fa84d985-e6b3-4d3b-a932-306821504c18.png)
 
 Globe
 ```Python
-python ./macr_mf/train.py --dataset globe --batch_size 4096 --cuda 0 --saveID 0 --log_interval 20 --lr 0.001 --check_c 1 --start 30 --end 31 --step 1 --train rubibceboth --test rubi --alpha 1e-3 --beta 1e-3
+python ./macr_mf/train.py --dataset globe --batch_size 4096 --cuda 0 --saveID 0 --log_interval 10 --lr 0.001 --check_c 1 --start 30 --end 31 --step 1 --train rubibceboth --test rubi --alpha 1e-3 --beta 1e-3
 ```
 ![image](https://user-images.githubusercontent.com/37143015/131951240-49530141-3bdf-4824-bbc7-b08067628645.png)
 
 Yelp2018
 ```Python
-python ./macr_mf/train.py --dataset yelp2018 --batch_size 4096 --cuda 0 --saveID 0 --log_interval 20 --lr 0.001 --check_c 1 --start 40 --end 41 --step 1 --train rubibceboth --test rubi --alpha 1e-2 --beta 1e-3
+python ./macr_mf/train.py --dataset yelp2018 --batch_size 4096 --cuda 0 --saveID 0 --log_interval 10 --lr 0.001 --check_c 1 --start 40 --end 41 --step 1 --train rubibceboth --test rubi --alpha 1e-2 --beta 1e-3
 ```
 ![mf_yelp](https://user-images.githubusercontent.com/37143015/131951078-9a9c4540-55a7-4e08-a329-2578208172b1.png)
 
@@ -67,31 +67,31 @@ MACR LightGCN:
 
 ML10M
 ```Python
-python macr_lightgcn/LightGCN.py --data_path data/ --dataset ml_10m --verbose 1 --layer_size [64,64] --Ks [20] --loss bceboth --test rubiboth --start 40 --end 41 --step 1 --epoch 2000 --early_stop 1 --lr 0.001 --batch_size 8192 --gpu_id 0 --log_interval 20 --alpha 1e-2 --beta 1e-3
+python macr_lightgcn/LightGCN.py --data_path data/ --dataset ml_10m --verbose 1 --layer_size [64,64] --Ks [20] --loss bceboth --test rubiboth --start 40 --end 41 --step 1 --epoch 2000 --early_stop 1 --lr 0.001 --batch_size 8192 --gpu_id 0 --log_interval 10 --alpha 1e-2 --beta 1e-3
 ```
 ![image](https://user-images.githubusercontent.com/37143015/131952138-5de9b23b-f12e-432d-9427-3b274580c18c.png)
 
 Gowalla
 ```Python
-python macr_lightgcn/LightGCN.py --data_path data/ --dataset gowalla --verbose 1 --layer_size [64,64] --Ks [20] --loss bceboth --test rubiboth --start 40 --end 41 --step 1 --epoch 2000 --early_stop 1 --lr 0.001 --batch_size 4096 --gpu_id 0 --log_interval 20 --alpha 1e-2 --beta 1e-3
+python macr_lightgcn/LightGCN.py --data_path data/ --dataset gowalla --verbose 1 --layer_size [64,64] --Ks [20] --loss bceboth --test rubiboth --start 40 --end 41 --step 1 --epoch 2000 --early_stop 1 --lr 0.001 --batch_size 4096 --gpu_id 0 --log_interval 10 --alpha 1e-2 --beta 1e-3
 ```
 ![image](https://user-images.githubusercontent.com/37143015/131952287-d04e3a77-ce4f-4bf9-a043-531371bf10e8.png)
 
 Globe
 ```Python
-python macr_lightgcn/LightGCN.py --data_path data/ --dataset globe --verbose 1 --layer_size [64,64] --Ks [20] --loss bceboth --test rubiboth --start 40 --end 41 --step 1 --epoch 2000 --early_stop 1 --lr 0.001 --batch_size 4096 --gpu_id 0 --log_interval 20 --alpha 1e-2 --beta 1e-3
+python macr_lightgcn/LightGCN.py --data_path data/ --dataset globe --verbose 1 --layer_size [64,64] --Ks [20] --loss bceboth --test rubiboth --start 60 --end 61 --step 1 --epoch 2000 --early_stop 1 --lr 0.001 --batch_size 4096 --gpu_id 0 --log_interval 10 --alpha 1e-2 --beta 1e-3
 ```
 ![image](https://user-images.githubusercontent.com/37143015/131952397-1de45ac2-f1a5-43a2-9b6d-8cd2634799d2.png)
 
 Yelp2018
 ```Python
-python macr_lightgcn/LightGCN.py --data_path data/ --dataset yelp2018 --verbose 1 --layer_size [64,64] --Ks [20] --loss bceboth --test rubiboth --start 40 --end 41 --step 1 --epoch 2000 --early_stop 1 --lr 0.001 --batch_size 4096 --gpu_id 0 --log_interval 20 --alpha 1e-2 --beta 1e-3
+python macr_lightgcn/LightGCN.py --data_path data/ --dataset yelp2018 --verbose 1 --layer_size [64,64] --Ks [20] --loss bceboth --test rubiboth --start 40 --end 41 --step 1 --epoch 2000 --early_stop 1 --lr 0.001 --batch_size 4096 --gpu_id 0 --log_interval 10 --alpha 1e-2 --beta 1e-3
 ```
 ![image](https://user-images.githubusercontent.com/37143015/131952545-3fd9a4d8-73d4-418f-8491-a5294cadadec.png)
 
 Adressa
 ```Python
-python macr_lightgcn/LightGCN.py --data_path data/ --dataset addressa --verbose 1 --layer_size [64,64] --Ks [20] --loss bceboth --test rubiboth --start 30 --end 31 --step 1 --epoch 2000 --early_stop 1 --lr 0.001 --batch_size 1024 --gpu_id 0 --log_interval 20 --alpha 1e-2 --beta 1e-3
+python macr_lightgcn/LightGCN.py --data_path data/ --dataset addressa --verbose 1 --layer_size [64,64] --Ks [20] --loss bceboth --test rubiboth --start 30 --end 31 --step 1 --epoch 2000 --early_stop 1 --lr 0.001 --batch_size 1024 --gpu_id 0 --log_interval 10 --alpha 1e-2 --beta 1e-3
 ```
 ![image](https://user-images.githubusercontent.com/37143015/131951823-2ee91466-e4b9-479b-8e93-06d6c8162e59.png)
 
