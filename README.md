@@ -29,6 +29,14 @@ Change the argument dataset to run experiments on different datasets
 
 MACR MF:
 
+```Python
+python ./macr_mf/train.py --dataset addressa --batch_size 1024 --cuda 0 --saveID 1 --log_interval 10 --lr 0.001 --train normalbce --test normal
+```
+
+Fixing C to 40 can get great performance. Without fixing, tuning the value of C will get higher performance.
+
+MACR MF:
+
 ML10M
 ```Python
 python ./macr_mf/train.py --dataset ml_10m --batch_size 8192 --cuda 0 --saveID 0 --log_interval 10 --lr 0.001 --check_c 1 --start 30 --end 31 --step 1 --train rubibceboth --test rubi --alpha 1e-3 --beta 1e-3
@@ -96,7 +104,7 @@ python macr_lightgcn/LightGCN.py --data_path data/ --dataset addressa --verbose 
 ```
 ![image](https://user-images.githubusercontent.com/37143015/131951823-2ee91466-e4b9-479b-8e93-06d6c8162e59.png)
 
-Here we fix C. The value of counterfactual C can be further adjusted for better performance.
+The value of counterfactual C can be further fine-grained adjusted for better performance.
 # Datasets
 We use several recommendation datasets in the following format:
 * train.txt: Biased training data. Each line is user ID, item ID.
