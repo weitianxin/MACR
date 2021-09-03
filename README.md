@@ -36,31 +36,31 @@ ML10M
 ```Python
 python ./macr_mf/train.py --dataset ml_10m --batch_size 8192 --cuda 0 --saveID 0 --log_interval 10 --lr 0.001 --check_c 1 --start 30 --end 31 --step 1 --train rubibceboth --test rubi --alpha 1e-3 --beta 1e-3
 ```
-![image](https://user-images.githubusercontent.com/37143015/131950342-94bedf98-b6ef-4728-a819-34ce6a17377b.png)
+![mf_ml10m](https://user-images.githubusercontent.com/37143015/131950971-71a1707f-30bb-4f89-bc3c-03d805414aca.png)
 
 Gowalla
 ```Python
 python ./macr_mf/train.py --dataset gowalla --batch_size 4096 --cuda 0 --saveID 0 --log_interval 20 --lr 0.001 --check_c 1 --start 40 --end 41 --step 1 --train rubibceboth --test rubi --alpha 1e-2 --beta 1e-3
 ```
-![image](https://user-images.githubusercontent.com/37143015/131949744-3563ad3f-18b6-424e-85ae-25a32f3bc844.png)
+![image12](https://user-images.githubusercontent.com/37143015/131951141-fa84d985-e6b3-4d3b-a932-306821504c18.png)
 
 Globe
 ```Python
 python ./macr_mf/train.py --dataset globe --batch_size 4096 --cuda 0 --saveID 0 --log_interval 20 --lr 0.001 --check_c 1 --start 30 --end 31 --step 1 --train rubibceboth --test rubi --alpha 1e-3 --beta 1e-3
 ```
-![image](https://user-images.githubusercontent.com/37143015/131950027-5f423d57-a561-4c66-903d-0c5d1d792b73.png)
+![image](https://user-images.githubusercontent.com/37143015/131951030-0ea7508b-bee7-4d56-b5c3-f0076a7dec8a.png)
 
 Yelp2018
 ```Python
 python ./macr_mf/train.py --dataset yelp2018 --batch_size 4096 --cuda 0 --saveID 0 --log_interval 20 --lr 0.001 --check_c 1 --start 40 --end 41 --step 1 --train rubibceboth --test rubi --alpha 1e-2 --beta 1e-3
 ```
-![image](https://user-images.githubusercontent.com/37143015/131950110-07b7e277-ade7-425e-8af9-17956deea5cb.png)
+![mf_yelp](https://user-images.githubusercontent.com/37143015/131951078-9a9c4540-55a7-4e08-a329-2578208172b1.png)
 
 Adressa
 ```Python
 python ./macr_mf/train.py --dataset addressa --batch_size 1024 --cuda 0 --saveID 0 --log_interval 10 --lr 0.001 --check_c 1 --start 30 --end 31 --step 1 --train rubibceboth --test rubi --alpha 1e-3 --beta 1e-3
 ```
-![image](https://user-images.githubusercontent.com/37143015/131950134-e9335b50-5019-4353-a37b-28b909f414b9.png)
+![image2](https://user-images.githubusercontent.com/37143015/131950898-27a25c94-a6ee-4194-8d91-054de60ade37.png)
 ## LightGCN
 Normal LightGCN:
 ```Python
