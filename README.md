@@ -10,7 +10,7 @@ MACR is a general popularity debias framework based on causal inference and coun
 * tensorflow == 1.14
 * Numpy == 1.16.0
 * python == 3.6
-* Cython == 0.29.24
+* Cython == 0.29.24 (Optional)
 * CUDA v10
 
 For LightGCN C++ evaluation, please install Cython and do
