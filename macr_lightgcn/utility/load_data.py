@@ -12,13 +12,15 @@ from time import time
 import collections
 
 class Data(object):
-    def __init__(self, path, batch_size):
+    def __init__(self, path, batch_size, args):
         self.path = path
         self.batch_size = batch_size
 
         train_file = path + '/train.txt'
-        test_file = path + '/test.txt'
-
+        if args.valid_set=="test":
+            test_file = path + '/test.txt'
+        else:
+            test_file = path + '/valid.txt'
         self.n_users, self.n_items = 0, 0
         self.n_train, self.n_test = 0, 0
         self.neg_pools = {}
@@ -48,6 +50,7 @@ class Data(object):
                     if len(items) != 0:
                         self.n_items = max(self.n_items, max(items))
                     self.n_test += len(items)
+        
         self.n_items += 1
         self.n_users += 1
         self.print_statistics()

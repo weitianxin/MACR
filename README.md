@@ -85,13 +85,13 @@ python macr_lightgcn/LightGCN.py --data_path data/ --dataset addressa --verbose 
 | ---------------- | ------- | ------- | -------- |
 | LightGCN_ML10M   | 0.15262 | 0.04745 | 0.02844  |
 | LightGCN_Gowalla | 0.28410 | 0.09076 | 0.05999  |
-| LightGCN_Globe   | 0.12612 | 0.05271 | 0.02904  |
+| LightGCN_Globe   | 0.12512 | 0.05271 | 0.02904  |
 | LightGCN_Adressa | 0.16456 | 0.12967 | 0.06071  |
 | LightGCN_Yelp    | 0.17210 | 0.04016 | 0.02649  |
 | MF_ML10M         | 0.14011 | 0.04087 | 0.02407  |
 | MF_Gowalla       | 0.26669 | 0.08488 | 0.05756  |
 | Mf Globe         | 0.10725 | 0.04594 | 0.02513  |
-| MF Adressa       | 0.13561 | 0.10712 | 0.04667  |
+| MF Adressa       | 0.13561 | 0.10612 | 0.04667  |
 | MF Yelp          | 0.14444 | 0.02863 | 0.02039  |
 
 

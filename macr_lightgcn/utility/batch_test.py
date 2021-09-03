@@ -15,7 +15,7 @@ import numpy as np
 cores = multiprocessing.cpu_count() // 2
 
 args = parse_args()
-data_generator = Data(path=args.data_path + args.dataset, batch_size=args.batch_size)
+data_generator = Data(path=args.data_path + args.dataset, batch_size=args.batch_size, args=args)
 # data_generator.check()
 USR_NUM, ITEM_NUM = data_generator.n_users, data_generator.n_items
 N_TRAIN, N_TEST = data_generator.n_train, data_generator.n_test
