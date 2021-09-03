@@ -48,7 +48,7 @@ Globe
 ```Python
 python ./macr_mf/train.py --dataset globe --batch_size 4096 --cuda 0 --saveID 0 --log_interval 20 --lr 0.001 --check_c 1 --start 30 --end 31 --step 1 --train rubibceboth --test rubi --alpha 1e-3 --beta 1e-3
 ```
-![image](https://user-images.githubusercontent.com/37143015/131951030-0ea7508b-bee7-4d56-b5c3-f0076a7dec8a.png)
+![image](https://user-images.githubusercontent.com/37143015/131951240-49530141-3bdf-4824-bbc7-b08067628645.png)
 
 Yelp2018
 ```Python
