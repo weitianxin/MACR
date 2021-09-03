@@ -12,6 +12,7 @@ MACR is a general popularity debias framework based on causal inference and coun
 * python3.6
 * Cython
 * CUDA 10
+
 For LightGCN C++ evaluation, please install Cython and do
 ```Python
 cd macr_lightgcn
