@@ -849,25 +849,25 @@ if __name__ == '__main__':
                 print('Epoch %d'%(epoch))
                 best_c = 0
                 best_hr = 0
-                c = args.c
-                model.update_c(sess, c)
-                ret = test(sess, model, users_to_test, method=args.test)
-                t3 = time()
-                loss_loger.append(loss)
-                rec_loger.append(ret['recall'][0])
-                ndcg_loger.append(ret['ndcg'][0])
-                hit_loger.append(ret['hr'][0])
+                for c in np.linspace(args.start, args.end, args.step):
+                    model.update_c(sess, c)
+                    ret = test(sess, model, users_to_test, method=args.test)
+                    t3 = time()
+                    loss_loger.append(loss)
+                    rec_loger.append(ret['recall'][0])
+                    ndcg_loger.append(ret['ndcg'][0])
+                    hit_loger.append(ret['hr'][0])
 
-                if ret['hr'][0] > best_hr:
-                    best_hr = ret['hr'][0]
-                    best_c = c
+                    if ret['hr'][0] > best_hr:
+                        best_hr = ret['hr'][0]
+                        best_c = c
 
-                if args.verbose > 0:
-                    perf_str += 'c:%.2f recall=[%.5f, %.5f], ' \
-                                'hit=[%.5f, %.5f], ndcg=[%.5f, %.5f]\n' % \
-                                (c, ret['recall'][0], ret['recall'][-1],
-                                    ret['hr'][0], ret['hr'][-1],
-                                    ret['ndcg'][0], ret['ndcg'][-1])
+                    if args.verbose > 0:
+                        perf_str += 'c:%.2f recall=[%.5f, %.5f], ' \
+                                    'hit=[%.5f, %.5f], ndcg=[%.5f, %.5f]\n' % \
+                                    (c, ret['recall'][0], ret['recall'][-1],
+                                        ret['hr'][0], ret['hr'][-1],
+                                        ret['ndcg'][0], ret['ndcg'][-1])
                 
                 flg = False
                     

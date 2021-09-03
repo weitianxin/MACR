@@ -542,40 +542,40 @@ if __name__ == '__main__':
                     best_recall=0
                     best_ndcg=0
                     best_pre=0
-                    c = args.c
-                    model.update_c(sess, c)
-                    if args.valid_set=="test":
-                        if args.train == 'rubibceboth':
-                            ret = test(sess, model, users_to_test, model_type="rubi_both", valid_set="test")
-                        else:
-                            ret = test(sess, model, users_to_test, model_type="rubi_c", valid_set="test")
-                    elif args.valid_set=="valid":
-                        if args.train == 'rubibceboth':
-                            ret = test(sess, model, users_to_test, model_type="rubi_both", valid_set="valid")
-                        else:
-                            ret = test(sess, model, users_to_test, model_type="rubi_c", valid_set="valid")
-                    t3 = time()
-                    loss_loger.append(loss)
-                    rec_loger.append(ret['recall'][0])
-                    pre_loger.append(ret['precision'][0])
-                    ndcg_loger.append(ret['ndcg'][0])
-                    hit_loger.append(ret['hit_ratio'][0])
+                    for c in np.linspace(args.start, args.end, args.step):
+                        model.update_c(sess, c)
+                        if args.valid_set=="test":
+                            if args.train == 'rubibceboth':
+                                ret = test(sess, model, users_to_test, model_type="rubi_both", valid_set="test")
+                            else:
+                                ret = test(sess, model, users_to_test, model_type="rubi_c", valid_set="test")
+                        elif args.valid_set=="valid":
+                            if args.train == 'rubibceboth':
+                                ret = test(sess, model, users_to_test, model_type="rubi_both", valid_set="valid")
+                            else:
+                                ret = test(sess, model, users_to_test, model_type="rubi_c", valid_set="valid")
+                        t3 = time()
+                        loss_loger.append(loss)
+                        rec_loger.append(ret['recall'][0])
+                        pre_loger.append(ret['precision'][0])
+                        ndcg_loger.append(ret['ndcg'][0])
+                        hit_loger.append(ret['hit_ratio'][0])
 
-                    if ret['hit_ratio'][0] > best_hr:
-                        best_hr = ret['hit_ratio'][0]
-                        best_recall=ret['recall'][0]
-                        best_pre=ret['precision'][0]
-                        best_ndcg=ret['ndcg'][0]
-                        best_c = c
+                        if ret['hit_ratio'][0] > best_hr:
+                            best_hr = ret['hit_ratio'][0]
+                            best_recall=ret['recall'][0]
+                            best_pre=ret['precision'][0]
+                            best_ndcg=ret['ndcg'][0]
+                            best_c = c
 
-                    if args.verbose > 0:
-                        perf_str = 'c:%.2f [%.1fs + %.1fs]: train==[%.8f=%.8f + %.8f], recall=[%.5f, %.5f], ' \
-                                'precision=[%.5f, %.5f], hit=[%.5f, %.5f], ndcg=[%.5f, %.5f]' % \
-                                (c, t2 - t1, t3 - t2, loss, mf_loss, reg_loss, ret['recall'][0], ret['recall'][-1],
-                                    ret['precision'][0], ret['precision'][-1], ret['hit_ratio'][0], ret['hit_ratio'][-1],
-                                    ret['ndcg'][0], ret['ndcg'][-1])
-                        print(perf_str)
-                        logging.info(perf_str)
+                        if args.verbose > 0:
+                            perf_str = 'c:%.2f [%.1fs + %.1fs]: train==[%.8f=%.8f + %.8f], recall=[%.5f, %.5f], ' \
+                                    'precision=[%.5f, %.5f], hit=[%.5f, %.5f], ndcg=[%.5f, %.5f]' % \
+                                    (c, t2 - t1, t3 - t2, loss, mf_loss, reg_loss, ret['recall'][0], ret['recall'][-1],
+                                        ret['precision'][0], ret['precision'][-1], ret['hit_ratio'][0], ret['hit_ratio'][-1],
+                                        ret['ndcg'][0], ret['ndcg'][-1])
+                            print(perf_str)
+                            logging.info(perf_str)
 
                     ret['hit_ratio'][0]=best_hr
                     ret['recall'][0]=best_recall

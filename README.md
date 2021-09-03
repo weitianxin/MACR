@@ -19,55 +19,42 @@ cd macr_lightgcn
 python setup.py build_ext --inplace
 ```
 # Run the code
-## MF
 
-Normal MF:
-```Python
-python ./macr_mf/train.py --dataset addressa --batch_size 1024 --cuda 0 --saveID 1 --log_interval 10 --lr 0.001 --train normalbce --test normal
-```
-Change the argument dataset to run experiments on different datasets
+Like what we mentioned in our paper, great performance can be obtained by easily setting C=30 or C=40. Here we show the results of setting C=40.
 
-MACR MF:
+Normal MF :
+
+Change the dataset argument to run experiments on different datasets
 
 ```Python
 python ./macr_mf/train.py --dataset addressa --batch_size 1024 --cuda 0 --saveID 1 --log_interval 10 --lr 0.001 --train normalbce --test normal
 ```
-
-Fixing C to 40 can get great performance. Without fixing, tuning the value of C will get higher performance.
-
 MACR MF:
 
 ML10M
 ```Python
-python ./macr_mf/train.py --dataset ml_10m --batch_size 8192 --cuda 0 --saveID 0 --log_interval 10 --lr 0.001 --check_c 1 --start 30 --end 31 --step 1 --train rubibceboth --test rubi --alpha 1e-3 --beta 1e-3
+python ./macr_mf/train.py --dataset ml_10m --batch_size 8192 --cuda 0 --saveID 0 --log_interval 10 --lr 0.001 --check_c 1 --c 40 --train rubibceboth --test rubi --alpha 1e-3 --beta 1e-3
 ```
-![mf_ml10m](https://user-images.githubusercontent.com/37143015/131950971-71a1707f-30bb-4f89-bc3c-03d805414aca.png)
-
 Gowalla
 ```Python
-python ./macr_mf/train.py --dataset gowalla --batch_size 4096 --cuda 0 --saveID 0 --log_interval 10 --lr 0.001 --check_c 1 --start 40 --end 41 --step 1 --train rubibceboth --test rubi --alpha 1e-2 --beta 1e-3
+python ./macr_mf/train.py --dataset gowalla --batch_size 4096 --cuda 0 --saveID 0 --log_interval 10 --lr 0.001 --check_c 1 --c 40 --train rubibceboth --test rubi --alpha 1e-2 --beta 1e-3
 ```
-![image12](https://user-images.githubusercontent.com/37143015/131951141-fa84d985-e6b3-4d3b-a932-306821504c18.png)
-
 Globe
 ```Python
-python ./macr_mf/train.py --dataset globe --batch_size 4096 --cuda 0 --saveID 0 --log_interval 10 --lr 0.001 --check_c 1 --start 30 --end 31 --step 1 --train rubibceboth --test rubi --alpha 1e-3 --beta 1e-3
+python ./macr_mf/train.py --dataset globe --batch_size 4096 --cuda 0 --saveID 0 --log_interval 10 --lr 0.001 --check_c 1 --c 40 --train rubibceboth --test rubi --alpha 1e-3 --beta 1e-3
 ```
-![image](https://user-images.githubusercontent.com/37143015/131952919-65b9cd9a-87a1-4baf-b9e3-3ce72169cbe3.png)
-
 Yelp2018
 ```Python
-python ./macr_mf/train.py --dataset yelp2018 --batch_size 4096 --cuda 0 --saveID 0 --log_interval 10 --lr 0.001 --check_c 1 --start 40 --end 41 --step 1 --train rubibceboth --test rubi --alpha 1e-2 --beta 1e-3
+python ./macr_mf/train.py --dataset yelp2018 --batch_size 4096 --cuda 0 --saveID 0 --log_interval 10 --lr 0.001 --check_c 1 --c 40 --train rubibceboth --test rubi --alpha 1e-2 --beta 1e-3
 ```
-![mf_yelp](https://user-images.githubusercontent.com/37143015/131951078-9a9c4540-55a7-4e08-a329-2578208172b1.png)
-
 Adressa
 ```Python
-python ./macr_mf/train.py --dataset addressa --batch_size 1024 --cuda 0 --saveID 0 --log_interval 10 --lr 0.001 --check_c 1 --start 30 --end 31 --step 1 --train rubibceboth --test rubi --alpha 1e-3 --beta 1e-3
+python ./macr_mf/train.py --dataset addressa --batch_size 1024 --cuda 0 --saveID 0 --log_interval 10 --lr 0.001 --check_c 1 --c 40 --train rubibceboth --test rubi --alpha 1e-3 --beta 1e-3
 ```
-![image2](https://user-images.githubusercontent.com/37143015/131950898-27a25c94-a6ee-4194-8d91-054de60ade37.png)
-## LightGCN
+
+
 Normal LightGCN:
+
 ```Python
 python macr_lightgcn/LightGCN.py --data_path data/ --dataset addressa --verbose 1 --layer_size [64,64] --Ks [20] --loss bce --test normal --epoch 2000 --early_stop 1 --lr 0.001 --batch_size 1024 --gpu_id 1 --log_interval 10
 ```
@@ -76,39 +63,50 @@ MACR LightGCN:
 
 ML10M
 ```Python
-python macr_lightgcn/LightGCN.py --data_path data/ --dataset ml_10m --verbose 1 --layer_size [64,64] --Ks [20] --loss bceboth --test rubiboth --start 40 --end 41 --step 1 --epoch 2000 --early_stop 1 --lr 0.001 --batch_size 8192 --gpu_id 0 --log_interval 10 --alpha 1e-2 --beta 1e-3
+python macr_lightgcn/LightGCN.py --data_path data/ --dataset ml_10m --verbose 1 --layer_size [64,64] --Ks [20] --loss bceboth --test rubiboth --c 40 --epoch 2000 --early_stop 1 --lr 0.001 --batch_size 8192 --gpu_id 0 --log_interval 10 --alpha 1e-2 --beta 1e-3
 ```
-![image](https://user-images.githubusercontent.com/37143015/131952138-5de9b23b-f12e-432d-9427-3b274580c18c.png)
-
 Gowalla
 ```Python
-python macr_lightgcn/LightGCN.py --data_path data/ --dataset gowalla --verbose 1 --layer_size [64,64] --Ks [20] --loss bceboth --test rubiboth --start 40 --end 41 --step 1 --epoch 2000 --early_stop 1 --lr 0.001 --batch_size 4096 --gpu_id 0 --log_interval 10 --alpha 1e-2 --beta 1e-3
+python macr_lightgcn/LightGCN.py --data_path data/ --dataset gowalla --verbose 1 --layer_size [64,64] --Ks [20] --loss bceboth --test rubiboth --c 40 --epoch 2000 --early_stop 1 --lr 0.001 --batch_size 4096 --gpu_id 0 --log_interval 10 --alpha 1e-2 --beta 1e-3
 ```
-![image](https://user-images.githubusercontent.com/37143015/131952287-d04e3a77-ce4f-4bf9-a043-531371bf10e8.png)
-
 Globe
 ```Python
-python macr_lightgcn/LightGCN.py --data_path data/ --dataset globe --verbose 1 --layer_size [64,64] --Ks [20] --loss bceboth --test rubiboth --start 60 --end 61 --step 1 --epoch 2000 --early_stop 1 --lr 0.001 --batch_size 4096 --gpu_id 0 --log_interval 10 --alpha 1e-2 --beta 1e-3
+python macr_lightgcn/LightGCN.py --data_path data/ --dataset globe --verbose 1 --layer_size [64,64] --Ks [20] --loss bceboth --test rubiboth --c 40 --epoch 2000 --early_stop 1 --lr 0.001 --batch_size 4096 --gpu_id 0 --log_interval 10 --alpha 1e-2 --beta 1e-3
 ```
-![image](https://user-images.githubusercontent.com/37143015/131952397-1de45ac2-f1a5-43a2-9b6d-8cd2634799d2.png)
-
 Yelp2018
 ```Python
-python macr_lightgcn/LightGCN.py --data_path data/ --dataset yelp2018 --verbose 1 --layer_size [64,64] --Ks [20] --loss bceboth --test rubiboth --start 40 --end 41 --step 1 --epoch 2000 --early_stop 1 --lr 0.001 --batch_size 4096 --gpu_id 0 --log_interval 10 --alpha 1e-2 --beta 1e-3
+python macr_lightgcn/LightGCN.py --data_path data/ --dataset yelp2018 --verbose 1 --layer_size [64,64] --Ks [20] --loss bceboth --test rubiboth --c 40 --epoch 2000 --early_stop 1 --lr 0.001 --batch_size 4096 --gpu_id 0 --log_interval 10 --alpha 1e-2 --beta 1e-3
 ```
-![image](https://user-images.githubusercontent.com/37143015/131952545-3fd9a4d8-73d4-418f-8491-a5294cadadec.png)
-
 Adressa
 ```Python
-python macr_lightgcn/LightGCN.py --data_path data/ --dataset addressa --verbose 1 --layer_size [64,64] --Ks [20] --loss bceboth --test rubiboth --start 30 --end 31 --step 1 --epoch 2000 --early_stop 1 --lr 0.001 --batch_size 1024 --gpu_id 0 --log_interval 10 --alpha 1e-2 --beta 1e-3
+python macr_lightgcn/LightGCN.py --data_path data/ --dataset addressa --verbose 1 --layer_size [64,64] --Ks [20] --loss bceboth --test rubiboth --c 40 --epoch 2000 --early_stop 1 --lr 0.001 --batch_size 1024 --gpu_id 0 --log_interval 10 --alpha 1e-2 --beta 1e-3
 ```
-![image](https://user-images.githubusercontent.com/37143015/131951823-2ee91466-e4b9-479b-8e93-06d6c8162e59.png)
+|                  | **HR**  | Rec     | **NDCG** |
+| ---------------- | ------- | ------- | -------- |
+| LightGCN_ML10M   | 0.15262 | 0.04745 | 0.02844  |
+| LightGCN_Gowalla | 0.28410 | 0.09076 | 0.05999  |
+| LightGCN_Globe   | 0.12612 | 0.05271 | 0.02904  |
+| LightGCN_Adressa | 0.16456 | 0.12967 | 0.06071  |
+| LightGCN_Yelp    | 0.17210 | 0.04016 | 0.02649  |
+| MF_ML10M         | 0.14011 | 0.04087 | 0.02407  |
+| MF_Gowalla       | 0.26669 | 0.08488 | 0.05756  |
+| Mf Globe         | 0.10725 | 0.04594 | 0.02513  |
+| MF Adressa       | 0.13561 | 0.10712 | 0.04667  |
+| MF Yelp          | 0.14444 | 0.02863 | 0.02039  |
 
-The value of counterfactual C can be further fine-grained adjusted for better performance.
-# Datasets
-We use several recommendation datasets in the following format:
-* train.txt: Biased training data. Each line is user ID, item ID.
-* test.txt: Unbiased uniform test data. Each line is user ID, item ID.
+
+
+Fixing C to 40 can get great performance. Tuning the value of C through validation will get higher performance. For example on ML10M dataset:
+
+```python
+python ./macr_mf/tune.py --dataset ml_10m --batch_size 8192 --cuda 0 --saveID 0 --log_interval 10 --lr 0.001 --check_c 1 --start 30 --end 60 --step 31 --train rubibceboth --test rubi --alpha 1e-3 --beta 1e-3
+```
+
+|                            | **HR**  | Rec     | **NDCG** |
+| -------------------------- | ------- | ------- | -------- |
+| MF_ML10M  (C=40)           | 0.14011 | 0.04087 | 0.02407  |
+| MF_ML10M (Validation C=32) | 0.14545 | 0.04235 | 0.02518  |
+
 # Acknowledgement 
 Very thanks for Chufeng Shi for his help on code and the [LightGCN](https://github.com/kuandeng/LightGCN) code repo.
 # Citation
@@ -122,7 +120,6 @@ If you find this paper helpful, please cite our paper.
   year={2021}
 }
 ```
-
 
 
 

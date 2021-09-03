@@ -38,7 +38,7 @@ def parse_args():
                         help='Regularizations.')
     parser.add_argument('--lr', type=float, default=0.01,
                         help='Learning rate.')
-    parser.add_argument('--c', type=float, default=-1,
+    parser.add_argument('--c', type=float, default=40.0,
                         help='Value of C. -1 means automatic selection')
 
     parser.add_argument('--model_type', nargs='?', default='lightgcn',

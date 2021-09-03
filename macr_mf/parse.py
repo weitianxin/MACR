@@ -34,7 +34,7 @@ def parse_args():
                         help='Test c on these epochs.')
     parser.add_argument('--regs', type=float, default=1e-5,
                         help='Regularizations.')
-    parser.add_argument('--c', type=float, default=10.0,
+    parser.add_argument('--c', type=float, default=40.0,
                         help='Constant c.')
     parser.add_argument('--train_c', type=str, default="val",
                         help='val | test')
