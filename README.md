@@ -9,9 +9,9 @@ MACR is a general popularity debias framework based on causal inference and coun
 # Requirements
 * tensorflow == 1.14
 * Numpy == 1.16.0
-* python3.6
-* Cython
-* CUDA 10
+* python == 3.6
+* Cython == 0.29.24
+* CUDA v10
 
 For LightGCN C++ evaluation, please install Cython and do
 ```Python
