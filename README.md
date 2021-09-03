@@ -20,7 +20,7 @@ python setup.py build_ext --inplace
 ```
 # Run the code
 
-Like what we mentioned in our paper, great performance can be obtained by easily setting C=30 or C=40. Here we show the results of setting C=40.
+Like what we mentioned in our paper, great performance can be obtained by easily setting C=30 or C=40. Here we show the example results of setting C=40. 
 
 Normal MF :
 
