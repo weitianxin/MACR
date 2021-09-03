@@ -99,7 +99,7 @@ python macr_lightgcn/LightGCN.py --data_path data/ --dataset addressa --verbose 
 Fixing C to 40 can get great performance. Tuning the value of C through validation will get higher performance. For example on ML10M dataset:
 
 ```python
-python ./macr_mf/tune.py --dataset ml_10m --batch_size 8192 --cuda 0 --saveID 0 --log_interval 10 --lr 0.001 --check_c 1 --start 30 --end 60 --step 31 --train rubibceboth --test rubi --alpha 1e-3 --beta 1e-3
+python ./macr_mf/tune.py --dataset ml_10m --batch_size 8192 --cuda 0 --saveID 0 --log_interval 10 --lr 0.001 --check_c 1 --start 30 --end 60 --step 31 --train rubibceboth --test rubi --alpha 1e-3 --beta 1e-3 --valid_set valid
 ```
 
 |                            | **HR**  | Rec     | **NDCG** |
