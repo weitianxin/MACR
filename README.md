@@ -36,7 +36,7 @@ ML10M
 ```Python
 python ./macr_mf/train.py --dataset ml_10m --batch_size 8192 --cuda 0 --saveID 0 --log_interval 10 --lr 0.001 --check_c 1 --start 30 --end 31 --step 1 --train rubibceboth --test rubi --alpha 1e-3 --beta 1e-3
 ```
-![image](https://user-images.githubusercontent.com/37143015/131949545-a1d49f89-6b86-4b1f-aed5-9dbc63111b0b.png)
+![image](https://user-images.githubusercontent.com/37143015/131950342-94bedf98-b6ef-4728-a819-34ce6a17377b.png)
 
 Gowalla
 ```Python
