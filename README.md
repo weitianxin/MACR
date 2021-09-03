@@ -97,9 +97,6 @@ python macr_lightgcn/LightGCN.py --data_path data/ --dataset addressa --verbose 
 ![image](https://user-images.githubusercontent.com/37143015/131951823-2ee91466-e4b9-479b-8e93-06d6c8162e59.png)
 
 (The range of counterfactual C's value can be further adjusted for better performance.)
-
-
-More details and changes will be added soon.
 # Datasets
 We use several recommendation datasets in the following format:
 * train.txt: Biased training data. Each line is user ID, item ID.
