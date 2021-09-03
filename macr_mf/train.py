@@ -13,7 +13,7 @@ from scipy.special import softmax, expit
 from model import BPRMF, CausalE, IPS_BPRMF, BIASMF
 from batch_test import *
 from matplotlib import pyplot as plt
-
+logging.getLogger().setLevel(logging.INFO)
 cores = multiprocessing.cpu_count() // 2
 
 
@@ -330,8 +330,13 @@ def early_stop(hr, ndcg, recall, precision, cur_epoch, config, stopping_step, fl
     return config, stopping_step, should_stop
 
 if __name__ == '__main__':
-    # random.seed(123)
-    # tf.set_random_seed(123)
+    seed = 12345
+    random.seed(seed)
+    os.environ['PYTHONHASHSEED'] = str(seed)
+    np.random.seed(seed)
+    tf.set_random_seed(seed)
+
+    logging.basicConfig(filename="{}_{}_{}_{}".format(args.model, args.dataset, args.train, args.wd))
     os.environ["CUDA_VISIBLE_DEVICES"] = str(args.cuda)
     config = dict()
     config['n_users'] = data.n_users
@@ -446,9 +451,6 @@ if __name__ == '__main__':
                     break
         else:
             pass
-            # print('#load existing models.')
-            # model_file = tf.train.latest_checkpoint('{}_{}_checkpoint/wd_{}_lr_{}/'.format(args.model, args.dataset, args.wd, args.lr))
-            # saver.restore(sess, model_file)
     # MF
     else:
         # no pretrain
@@ -491,20 +493,7 @@ if __name__ == '__main__':
                         _, batch_loss, batch_mf_loss, batch_reg_loss = sess.run([model.opt_two_bce_both, model.loss_two_bce_both, model.mf_loss_two_bce_both, model.reg_loss_two_bce_both],
                                         feed_dict = {model.users: users,
                                                     model.pos_items: pos_items,
-                                                    model.neg_items: neg_items})    
-                        # print(batch_mf_loss, batch_reg_loss) 
-                    # _, batch_loss, batch_mf_loss, batch_reg_loss = sess.run([model.opt_two_bce, model.loss_two_bce, model.mf_loss_ori, model.mf_loss_item],
-                    #             feed_dict = {model.users: users,
-                    #                         model.pos_items: pos_items,
-                    #                         model.neg_items: neg_items})  
-                    # _, batch_loss, batch_mf_loss, batch_reg_loss = sess.run([model.opt_two, model.loss_two, model.mf_loss_ori_bce, model.mf_loss_item_bce],
-                    #                 feed_dict = {model.users: users,
-                    #                             model.pos_items: pos_items,
-                    #                             model.neg_items: neg_items})
-                    # _, batch_loss, batch_mf_loss, batch_reg_loss = sess.run([model.opt_two_bce, model.loss_two_bce, model.mf_loss_two_bce, model.reg_loss_two_bce],
-                    #                 feed_dict = {model.users: users,
-                    #                             model.pos_items: pos_items,
-                    #                             model.neg_items: neg_items})      
+                                                    model.neg_items: neg_items})       
                     loss += batch_loss/n_batch
                     mf_loss += batch_mf_loss/n_batch
                     reg_loss += batch_reg_loss/n_batch
@@ -517,6 +506,7 @@ if __name__ == '__main__':
                     if args.verbose > 0 and epoch % args.verbose == 0:
                         perf_str = 'Epoch %d [%.1fs]: train==[%.5f=%.5f + %.5f]' % (epoch, time()-t1, loss, mf_loss, reg_loss)
                         print(perf_str)
+                        logging.info(perf_str)
                     continue
 
                 t2 = time()
@@ -544,6 +534,7 @@ if __name__ == '__main__':
                                     ret['precision'][0], ret['precision'][-1], ret['hit_ratio'][0], ret['hit_ratio'][-1],
                                     ret['ndcg'][0], ret['ndcg'][-1])
                         print(perf_str)
+                        logging.info(perf_str)
                 elif args.test=="rubi":
                     print('Epoch %d'%(epoch))
                     best_c = 0
@@ -584,48 +575,7 @@ if __name__ == '__main__':
                                         ret['precision'][0], ret['precision'][-1], ret['hit_ratio'][0], ret['hit_ratio'][-1],
                                         ret['ndcg'][0], ret['ndcg'][-1])
                             print(perf_str)
-                    
-                    for c in np.linspace(best_c-1, best_c+1,1):
-                        model.update_c(sess, c)
-                        if args.valid_set=="test":
-                            if args.train == 'rubibceboth':
-                                ret = test(sess, model, users_to_test, model_type="rubi_both", valid_set="test")
-                            else:
-                                ret = test(sess, model, users_to_test, model_type="rubi_c", valid_set="test")
-                        elif args.valid_set=="valid":
-                            if args.train == 'rubibceboth':
-                                ret = test(sess, model, users_to_test, model_type="rubi_both", valid_set="valid")
-                            else:
-                                ret = test(sess, model, users_to_test, model_type="rubi_c", valid_set="valid")
-                        t3 = time()
-                        loss_loger.append(loss)
-                        rec_loger.append(ret['recall'][0])
-                        pre_loger.append(ret['precision'][0])
-                        ndcg_loger.append(ret['ndcg'][0])
-                        hit_loger.append(ret['hit_ratio'][0])
-
-                        if args.verbose > 0:
-                            perf_str = 'c:%.2f [%.1fs + %.1fs]: train==[%.8f=%.8f + %.8f], recall=[%.5f, %.5f], ' \
-                                    'precision=[%.5f, %.5f], hit=[%.5f, %.5f], ndcg=[%.5f, %.5f]' % \
-                                    (c, t2 - t1, t3 - t2, loss, mf_loss, reg_loss, ret['recall'][0], ret['recall'][-1],
-                                        ret['precision'][0], ret['precision'][-1], ret['hit_ratio'][0], ret['hit_ratio'][-1],
-                                        ret['ndcg'][0], ret['ndcg'][-1])
-                            print(perf_str)
-
-                        if ret['hit_ratio'][0] > best_hr:
-                            best_hr = ret['hit_ratio'][0]
-                            best_recall=ret['recall'][0]
-                            best_pre=ret['precision'][0]
-                            best_ndcg=ret['ndcg'][0]
-                            best_c = c
-
-                        if ret['hit_ratio'][0] > config['best_c_hr']:
-                            config['best_c_hr'] = ret['hit_ratio'][0]
-                            config['best_c_ndcg'] = ret['ndcg'][0]
-                            config['best_c_precision'] = ret['precision'][0]
-                            config['best_c_recall'] = ret['recall'][0]
-                            config['best_c_epoch'] = epoch
-                            config['best_c'] = c
+                            logging.info(perf_str)
 
                     ret['hit_ratio'][0]=best_hr
                     ret['recall'][0]=best_recall
@@ -655,57 +605,8 @@ if __name__ == '__main__':
         # pretrain
         else:
             print('#load existing models.')
-
-            model_file = 'mf_addressa_checkpoint/wd_1e-05_lr_0.001_mfnormalbce/669_ckpt.ckpt'
+            dataset = args.dataset
+            best_epoch = 299
+            model_file = 'mf_{}_checkpoint/wd_1e-05_lr_0.001_0/{}_ckpt.ckpt'.format(dataset, best_epoch)
             saver.restore(sess, model_file)
             users_to_test = list(data.test_user_list.keys())
-            ret = test(sess, model, users_to_test, valid_set="test")
-            perf_str = ' recall={}, ' \
-                                    'precision={}, hit={}, ndcg={}'.format(str(ret["recall"]),
-                                        str(ret['precision']), str(ret['hit_ratio']), str(ret['ndcg']))
-            print(perf_str)
-            exit()
-
-            best_epoch = 199
-            model_file = 'mf_addressa_checkpoint/wd_1e-05_lr_0.001_mf3branch_beta0/199_ckpt.ckpt'
-            saver.restore(sess, model_file)
-            c_best = 33.3
-            users_to_test = list(data.test_user_list.keys())
-            for c in [0, c_best]:
-                model.update_c(sess, c)
-                ret = test(sess, model, users_to_test, model_type="rubi_both", valid_set="test")
-                perf_str = 'c:{}: recall={}, ' \
-                                        'precision={}, hit={}, ndcg={}'.format(c, str(ret["recall"]),
-                                            str(ret['precision']), str(ret['hit_ratio']), str(ret['ndcg']))
-                print(perf_str)
-            exit()
-            # pop_item_test = np.array([len(data.test_item_list.get(i, [])) for i in range(ITEM_NUM)])
-            # users_to_test = list(data.test_user_list.keys())
-            # for pop_exp in np.arange(1,10,1):
-            #     # pop_exp = np.power(10,pop_exp)
-            #     ret = test(sess, model, users_to_test, item_pop_test = pop_item_test, pop_exp=pop_exp, model_type="item_pop_test", valid_set="test")
-            #     perf_str = 'pop_exp:%f  recall=[%.5f, %.5f], ' \
-            #                         'precision=[%.5f, %.5f], hit=[%.5f, %.5f], ndcg=[%.5f, %.5f]' % \
-            #                         (pop_exp, ret['recall'][0], ret['recall'][-1],
-            #                             ret['precision'][0], ret['precision'][-1], ret['hit_ratio'][0], ret['hit_ratio'][-1],
-            #                             ret['ndcg'][0], ret['ndcg'][-1])
-            #     print(perf_str)
-            #     perf_write = 'pop_exp:%f  %.4f %.4f %.4f' % \
-            #                         (pop_exp, ret['hit_ratio'][0], ret['recall'][0],  ret['ndcg'][0])
-            #     with open("result.txt","a+") as f:
-            #         f.write(perf_write+"\n")
-
-            
-    # [94, 99, 129, 184, 249, 299]
-
-    # print(config['best_c_epoch'], config['best_c_hr'], config['best_c_ndcg'], config['best_c_recall'], config['best_c_precision'])
-
-    if args.early_stop == 0 and args.pretrain == 0 and args.test=='normal':
-        print("{} dataset best epoch{}: hr:{} ndcg:{} recall:{} precision:{}".format(args.dataset, config['best_epoch'],config['best_hr'],config['best_ndcg'], config['best_recall'], config['best_pre']))
-        logging.info("{} dataset best epoch{}: hr:{} ndcg:{} recall:{} precision:{}".format(args.dataset, config['best_epoch'],config['best_hr'],config['best_ndcg'], config['best_recall'], config['best_pre']))
-
-        with open('{}_{}_checkpoint/wd_{}_lr_{}_{}/best_epoch.txt'.format(args.model, args.dataset, args.wd, args.lr, args.saveID),'w') as f:
-            print(config['best_epoch'], file = f)
-
-    #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    exit()

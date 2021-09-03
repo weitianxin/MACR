@@ -14,6 +14,8 @@ import os
 import sys
 import threading
 import tensorflow as tf
+import random
+import logging
 from tensorflow.python.client import device_lib
 from utility.helper import *
 from utility.batch_test import *
@@ -22,6 +24,7 @@ config = tf.ConfigProto()
 config.gpu_options.allow_growth = True
 sess = tf.Session(config=config)
 os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
+logging.getLogger().setLevel(logging.INFO)
 
 gpus = [x.name for x in device_lib.list_local_devices() if x.device_type == 'GPU']
 cpus = [x.name for x in device_lib.list_local_devices() if x.device_type == 'CPU']
@@ -644,9 +647,14 @@ class train_thread_test(threading.Thread):
                                                 model.mess_dropout: eval(args.mess_dropout)})            
 
 if __name__ == '__main__':
-    # os.environ["CUDA_VISIBLE_DEVICES"] = str(args.gpu_id)
     f0 = time()
-    
+    seed = 12345
+    random.seed(seed)
+    os.environ['PYTHONHASHSEED'] = str(seed)
+    np.random.seed(seed)
+    tf.set_random_seed(seed)
+
+    logging.basicConfig(filename="LightGCN_{}_{}_{}_{}".format(args.dataset, args.loss, args.test, args.alpha))
     config = dict()
     config['n_users'] = data_generator.n_users
     config['n_items'] = data_generator.n_items
@@ -697,18 +705,6 @@ if __name__ == '__main__':
     """
     
     if args.pretrain == 1:
-
-        # normal
-
-        # model_file = "../weights/addressa/LightGCN/64-64/l0.001_r1e-05-1e-05-0.01/weights_gcnnormal-300"
-        # users_to_test = list(data_generator.test_set.keys())
-        # saver.restore(sess, model_file)
-        # ret = test(sess, model, users_to_test)
-        # perf_str = 'recall={}, hit={}, ndcg={}'.format(str(ret["recall"]),
-        #                                     str(ret['hr']), str(ret['ndcg']))
-        # print(perf_str)
-        # exit()
-
         # MACR
         model_file = "Your Path"
         best_c = 45 # value of c
@@ -753,7 +749,6 @@ if __name__ == '__main__':
     best_epoch=0
     best_hr_norm = 0
     best_str = ''
-    # data_generator.check()
     if args.only_test == 0 and args.pretrain == 0:
         for epoch in range(1, args.epoch + 1):
             t1 = time()
@@ -793,20 +788,8 @@ if __name__ == '__main__':
                     perf_str = 'Epoch %d [%.1fs]: train==[%.5f=%.5f + %.5f]' % (
                         epoch, time() - t1, loss, mf_loss, emb_loss)
                     print(perf_str)
+                    logging.info(perf_str)
                 continue
-            # users_to_test = list(data_generator.train_items.keys())
-            # ret = test(sess, model, users_to_test ,drop_flag=True,train_set_flag=1)
-            # perf_str = 'Epoch %d: train==[%.5f=%.5f + %.5f + %.5f], recall=[%s], hr=[%s], ndcg=[%s]' % \
-            #            (epoch, loss, mf_loss, emb_loss, reg_loss, 
-            #             ', '.join(['%.5f' % r for r in ret['recall']]),
-            #             ', '.join(['%.5f' % r for r in ret['hr']]),
-            #             ', '.join(['%.5f' % r for r in ret['ndcg']]))
-            # print(perf_str)
-            # summary_train_acc = sess.run(model.merged_train_acc, feed_dict={model.train_rec_first: ret['recall'][0],
-            #                                                                 model.train_rec_last: ret['recall'][-1],
-            #                                                                 model.train_ndcg_first: ret['ndcg'][0],
-            #                                                                 model.train_ndcg_last: ret['ndcg'][-1]})
-            # train_writer.add_summary(summary_train_acc, epoch // 20)
             
             '''
             *********************************************************
@@ -835,10 +818,6 @@ if __name__ == '__main__':
                 mf_loss_test += batch_mf_loss_test / n_batch
                 emb_loss_test += batch_emb_loss_test / n_batch
                 
-            # summary_test_loss = sess.run(model.merged_test_loss,
-            #                             feed_dict={model.test_loss: loss_test, model.test_mf_loss: mf_loss_test,
-            #                                         model.test_emb_loss: emb_loss_test, model.test_reg_loss: reg_loss_test})
-            # train_writer.add_summary(summary_test_loss, epoch // 20)
             t2 = time()
             users_to_test = list(data_generator.test_set.keys())
 
@@ -861,6 +840,7 @@ if __name__ == '__main__':
                                 ', '.join(['%.5f' % r for r in ret['hr']]),
                                 ', '.join(['%.5f' % r for r in ret['ndcg']]))
                     print(perf_str, end='')
+                    logging.info(perf_str)
                 if ret['hr'][0] > best_hr_norm:
                     best_hr_norm = ret['hr'][0]
                     best_epoch = epoch
@@ -890,36 +870,10 @@ if __name__ == '__main__':
                                         ret['ndcg'][0], ret['ndcg'][-1])
                 
                 flg = False
-                for c in np.linspace(best_c-1, best_c+1,6):
-                    model.update_c(sess, c)
-                    ret = test(sess, model, users_to_test, method=args.test)
-                    t3 = time()
-                    loss_loger.append(loss)
-                    rec_loger.append(ret['recall'][0])
-                    ndcg_loger.append(ret['ndcg'][0])
-                    hit_loger.append(ret['hr'][0])
-
-                    if ret['hr'][0] > best_hr:
-                        best_hr = ret['hr'][0]
-                        best_c = c
-
-                    if args.verbose > 0:
-                        perf_str += 'c:%.2f recall=[%.5f, %.5f], ' \
-                                    'hit=[%.5f, %.5f], ndcg=[%.5f, %.5f]\n' % \
-                                    (c, ret['recall'][0], ret['recall'][-1],
-                                    ret['hr'][0], ret['hr'][-1],
-                                    ret['ndcg'][0], ret['ndcg'][-1])
-
-                    if ret['hr'][0] > config['best_c_hr']:
-                        config['best_c_hr'] = ret['hr'][0]
-                        config['best_c_ndcg'] = ret['ndcg'][0]
-                        config['best_c_recall'] = ret['recall'][0]
-                        config['best_c_epoch'] = epoch
-                        config['best_c'] = c
-                        flg = True
                     
                 ret['hr'][0] = best_hr
                 print(perf_str, end='')
+                logging.info(perf_str)
                 if flg:
                     best_str = perf_str
 
@@ -944,272 +898,9 @@ if __name__ == '__main__':
                 if args.test != 'normal':
                     with open(weights_save_path + '/best_epoch_{}.txt'.format(args.saveID),'w') as f:
                         f.write(str(config['best_c_epoch']))
-                    with open(weights_save_path + '/best_c_{}.txt'.format(args.saveID),'w') as f:
-                        f.write(str(config['best_c']))
                 else:
                     with open(weights_save_path + '/best_epoch_{}.txt'.format(args.saveID),'w') as f:
                         f.write(str(best_epoch))
                 break
 
-        if args.test == 'rubi1' or args.test == 'rubi2' or args.test == 'rubiboth':
-            print(config['best_c_epoch'], config['best_c_hr'], config['best_c_ndcg'], config['best_c_recall'],config['best_c'])
-        else:
-            print(best_epoch, best_hr_norm)
-        print(best_str, end='')
-
-
-
-    # if args.out == 1:
-    #     best_epoch = 0
-    #     best_c=0
-    #     with open(weights_save_path+'/best_epoch_{}.txt'.format(args.saveID),'r') as f:
-    #         best_epoch = eval(f.read())
-    #     model_file = weights_save_path + '/weights_{}-{}'.format(args.saveID,best_epoch)
-    #     save_saver.restore(sess, model_file)
-    #     if args.test == 'rubiboth':
-    #         with open(weights_save_path+'/best_c_{}.txt'.format(args.saveID),'r') as f:
-    #             best_c = eval(f.read())
-    #         model.update_c(sess, best_c)
-
-    #         print(best_epoch, best_c)
-
-
-    #     test_users = list(data_generator.test_set.keys())
-    #     n_test_users = len(test_users)
-    #     u_batch_size = BATCH_SIZE
-    #     n_user_batchs = n_test_users // u_batch_size + 1
         
-    #     total_rate = np.empty(shape=[0, ITEM_NUM])
-    #     item_batch = list(range(ITEM_NUM))
-    #     for u_batch_id in range(n_user_batchs):
-    #         start = u_batch_id * u_batch_size
-    #         end = (u_batch_id + 1) * u_batch_size
-
-    #         user_batch = test_users[start: end]
-    #         if args.test=="normal":
-    #             rate_batch = sess.run(model.batch_ratings, {model.users: user_batch,
-    #                                                             model.pos_items: item_batch})
-
-    #         elif args.test == 'rubiboth':
-    #             rate_batch = sess.run(model.rubi_ratings_both, {model.users: user_batch,
-    #                                                                 model.pos_items: item_batch})
-
-    #         total_rate = np.vstack((total_rate, rate_batch))
-        
-    #     total_sorted_id = np.argsort(-total_rate, axis=1)
-    #     count = np.zeros(shape=[ITEM_NUM])
-    #     for user, line in enumerate(total_sorted_id):
-    #         # cutline = line[:10]
-    #         # for item in cutline:
-    #         #     count[item] += 1
-    #         n = 0
-    #         for item in line:
-    #             if user not in data_generator.train_items.keys() or item not in data_generator.train_items[user]:
-    #                 count[item] += 1
-    #                 n += 1
-    #             if n == 10:
-    #                 break
-
-
-
-    #     usersorted_id = []
-    #     userbelong = []
-    #     sorted_id = []
-    #     belong = []
-    #     with open('./curve/usersorted_id.txt','r') as f:
-    #         usersorted_id=eval(f.read())
-    #     with open('./curve/userbelong.txt','r') as f:
-    #         userbelong=eval(f.read())
-    #     with open('./curve/itembelong.txt','r') as f:
-    #         belong=eval(f.read())
-    #     with open('./curve/itemsorted_id.txt','r') as f:
-    #         sorted_id=eval(f.read())
-
-    #     count = count[sorted_id]
-    #     x = list(range(6))
-    #     y = [0,0,0,0,0,0]
-    #     n_y = [0,0,0,0,0,0]
-    #     for n, pop in enumerate(count):
-    #         y[belong[n]] += pop
-    #         n_y[belong[n]] += 1
-    #     for i in range(6):
-    #         y[i]/=1.0*n_y[i]
-
-    #     with open('./curve/gcny_{}.txt'.format(args.loss), 'w') as f:
-    #         f.write(str(y))
-        
-
-    #     if args.test == 'rubiboth':
-    #         sig_yu, sig_yi = sess.run([model.sigmoid_yu, model.sigmoid_yi])
-
-    #         sig_sum = [0,0,0,0,0,0]
-    #         n_sig = [0,0,0,0,0,0]
-
-    #         sig_yu = sig_yu[usersorted_id]
-    #         for i, sig in enumerate(sig_yu):
-    #             sig_sum[userbelong[i]] += sig
-    #             n_sig[userbelong[i]] += 1
-                
-    #         for i in range(6):
-    #             sig_sum[i]/=1.0*n_sig[i]
-                
-    #         with open('./curve/sig_yu_gcn.txt', 'w') as f:
-    #             f.write(str(sig_sum))
-
-    #         sig_sum = [0,0,0,0,0,0]
-    #         n_sig = [0,0,0,0,0,0]
-
-    #         sig_yi = sig_yi[sorted_id]
-    #         for i, sig in enumerate(sig_yi):
-    #             sig_sum[belong[i]] += sig
-    #             n_sig[belong[i]] += 1
-                
-    #         for i in range(6):
-    #             sig_sum[i]/=1.0*n_sig[i]
-                
-    #         with open('./curve/sig_yi_gcn.txt', 'w') as f:
-    #             f.write(str(sig_sum))
-
-    #         import matplotlib.pyplot as plt
-    #         import matplotlib
-    #         matplotlib.rcParams['figure.figsize'] = [10.5,6.5] # for square canvas
-    #         matplotlib.rcParams['figure.subplot.left'] = 0.2
-    #         matplotlib.rcParams['figure.subplot.bottom'] =0.1
-    #         matplotlib.rcParams['figure.subplot.right'] = 0.8
-    #         matplotlib.rcParams['figure.subplot.top'] = 0.8
-
-    #         plt.switch_backend('agg')
-    #         x = np.linspace(0, 60, 41)
-    #         y = []
-    #         for c in x:
-    #             model.update_c(sess, c)
-    #             test_users = list(data_generator.test_set.keys())
-    #             ret = test(sess, model, test_users, method=args.test)
-    #             y.append(ret['hr'][0])
-    #         plt.plot(x, y, color='sandybrown')
-    #         plt.scatter(x, y, color='sandybrown')
-    #         plt.grid(alpha=0.3)
-    #         plt.xlabel('c', size=24, fontweight='bold')
-    #         plt.ylabel('HR@20', size=24, fontweight='bold')
-    #         plt.xticks(size=16, fontweight='bold')
-    #         plt.yticks(size = 16, fontweight='bold')
-
-    #         plt.savefig('./curve/hr_addressa_causalgcn.png')
-    #         plt.cla()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    exit()
-
-    epoch = 0
-    best_epoch = 0
-    epochs_best_result = dict()
-    epochs_best_result['recall'] = 0
-    epochs_best_result['hit_ratio'] = 0
-    epochs_best_result['ndcg'] = 0
-    best_epoch_c = 0
-    while True:
-        best_c = 0
-        epoch_best_result = dict()
-        epoch_best_result['recall'] = 0
-        epoch_best_result['hit_ratio'] = 0
-        epoch_best_result['ndcg'] = 0
-        epoch += args.log_interval
-        try:
-            model_file = weights_save_path + '/weights_{}-{}'.format(args.saveID, epoch)
-            saver.restore(sess, model_file)
-        except ValueError:
-            break
-        print(epoch, ':restored.')
-        users_to_test = list(data_generator.test_set.keys())
-        msg = ''
-        base = args.base
-        for c in range(21):
-            c_v = base + c/10
-            model.update_c(sess, c_v)
-            ret = test(sess, model, users_to_test, drop_flag=True,method="causal_c")
-            perf_str = 'C=[%s], recall=[%s], ' \
-                        'hr=[%s], ndcg=[%s]' % \
-                        (c_v, 
-                            ', '.join(['%.5f' % r for r in ret['recall']]),
-                            ', '.join(['%.5f' % r for r in ret['hr']]),
-                            ', '.join(['%.5f' % r for r in ret['ndcg']]))
-            if ret['hr'][1] > epoch_best_result['hit_ratio']:
-                best_c = c_v
-                epoch_best_result['recall'] = ret['recall'][1]
-                epoch_best_result['hit_ratio'] = ret['hr'][1]
-                epoch_best_result['ndcg'] = ret['ndcg'][1]
-            # print(perf_str)
-            msg += perf_str + '\n'
-        base = best_c - 0.1
-        for c in range(21):
-            c_v = base + c/100
-            model.update_c(sess, c_v)
-            ret = test(sess, model, users_to_test, drop_flag=True,method="causal_c")
-            perf_str = 'C=[%s], recall=[%s], ' \
-                        'hr=[%s], ndcg=[%s]' % \
-                        (c_v, 
-                            ', '.join(['%.5f' % r for r in ret['recall']]),
-                            ', '.join(['%.5f' % r for r in ret['hr']]),
-                            ', '.join(['%.5f' % r for r in ret['ndcg']]))
-            if ret['hr'][1] > epoch_best_result['hit_ratio']:
-                best_c = c_v
-                epoch_best_result['recall'] = ret['recall'][1]
-                epoch_best_result['hit_ratio'] = ret['hr'][1]
-                epoch_best_result['ndcg'] = ret['ndcg'][1]
-            # print(perf_str)
-            msg += perf_str + '\n'
-        msg += ('best c = %.2f, recall@20=%.5f,\nhit@20=%.5f,\nndcg@20=%.5f' % (best_c,
-                        epoch_best_result['recall'],
-                        epoch_best_result['hit_ratio'],
-                        epoch_best_result['ndcg']))
-        if os.path.exists('check_c/') == False:
-            os.makedirs('check_c/')
-        with open('check_c/{}_{}_{}_epoch_{}.txt'.format(args.model_type, args.dataset, args.saveID, epoch), 'w') as f:
-            f.write(msg)
-        if epoch_best_result['hit_ratio'] > epochs_best_result['hit_ratio']:
-            best_epoch = epoch
-            best_epoch_c = best_c
-            epochs_best_result['recall'] = epoch_best_result['recall']
-            epochs_best_result['hit_ratio'] = epoch_best_result['hit_ratio']
-            epochs_best_result['ndcg'] = epoch_best_result['ndcg']
-    print('best epoch = %d, best c = %.2f, recall@20=%.5f,\nhit@20=%.5f,\nndcg@20=%.5f' % (best_epoch, best_epoch_c,
-                epochs_best_result['recall'],
-                epochs_best_result['hit_ratio'],
-                epochs_best_result['ndcg']))
-
-
-
-        # save_path = '%soutput/%s/%s.result' % (args.proj_path, args.dataset, model.model_type)
-        # ensureDir(save_path)
-        # f = open(save_path, 'a')
-
-        # f.write(
-        #     'embed_size=%d, lr=%.4f, layer_size=%s, node_dropout=%s, mess_dropout=%s, regs=%s, adj_type=%s\n\t%s\n'
-        #     % (args.embed_size, args.lr, args.layer_size, args.node_dropout, args.mess_dropout, args.regs,
-        #     args.adj_type, final_perf))
-        # f.close()
