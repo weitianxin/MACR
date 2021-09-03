@@ -29,17 +29,21 @@ Normal MF:
 python ./macr_mf/train.py --dataset addressa --batch_size 1024 --cuda 0 --saveID 1 --log_interval 10 --lr 0.001 --train normalbce --test normal
 ```
 Change the argument dataset to run experiments on different datasets
+
 MACR MF:
+
 ML10M
 ```Python
 python ./macr_mf/train.py --dataset ml_10m --batch_size 8192 --cuda 0 --saveID 0 --log_interval 10 --lr 0.001 --check_c 1 --start 30 --end 31 --step 1 --train rubibceboth --test rubi --alpha 1e-3 --beta 1e-3
 ```
 ![image](https://user-images.githubusercontent.com/37143015/131949545-a1d49f89-6b86-4b1f-aed5-9dbc63111b0b.png)
+
 Gowalla
 ```Python
 python ./macr_mf/train.py --dataset gowalla --batch_size 4096 --cuda 0 --saveID 0 --log_interval 20 --lr 0.001 --check_c 1 --start 40 --end 41 --step 1 --train rubibceboth --test rubi --alpha 1e-2 --beta 1e-3
 ```
 ![image](https://user-images.githubusercontent.com/37143015/131949744-3563ad3f-18b6-424e-85ae-25a32f3bc844.png)
+
 Globe
 ```Python
 python ./macr_mf/train.py --dataset globe --batch_size 4096 --cuda 0 --saveID 0 --log_interval 20 --lr 0.001 --check_c 1 --start 30 --end 31 --step 1 --train rubibceboth --test rubi --alpha 1e-3 --beta 1e-3
@@ -51,6 +55,7 @@ Yelp2018
 python ./macr_mf/train.py --dataset yelp2018 --batch_size 4096 --cuda 0 --saveID 0 --log_interval 20 --lr 0.001 --check_c 1 --start 40 --end 41 --step 1 --train rubibceboth --test rubi --alpha 1e-2 --beta 1e-3
 ```
 ![image](https://user-images.githubusercontent.com/37143015/131950110-07b7e277-ade7-425e-8af9-17956deea5cb.png)
+
 Adressa
 ```Python
 python ./macr_mf/train.py --dataset addressa --batch_size 1024 --cuda 0 --saveID 0 --log_interval 10 --lr 0.001 --check_c 1 --start 30 --end 31 --step 1 --train rubibceboth --test rubi --alpha 1e-3 --beta 1e-3
