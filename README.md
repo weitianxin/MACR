@@ -96,7 +96,7 @@ python macr_lightgcn/LightGCN.py --data_path data/ --dataset addressa --verbose 
 ```
 ![image](https://user-images.githubusercontent.com/37143015/131951823-2ee91466-e4b9-479b-8e93-06d6c8162e59.png)
 
-Here we fix C. The value of counterfactual C can be further adjusted for better performance.)
+Here we fix C. The value of counterfactual C can be further adjusted for better performance.
 # Datasets
 We use several recommendation datasets in the following format:
 * train.txt: Biased training data. Each line is user ID, item ID.
@@ -109,10 +109,12 @@ If you find this paper helpful, please cite our paper.
 @inproceedings{wei2021model,
   title={Model-Agnostic Counterfactual Reasoning for Eliminating Popularity Bias in Recommender System},
   author={Wei, Tianxin and Feng, Fuli and Chen, Jiawei and Wu, Ziwei and Yi, Jinfeng and He, Xiangnan},
-  booktitle={Proceedings of the 27th ACM SIGKDD International Conference on Knowledge Discovery \& Data Mining},
+  booktitle={Proceedings of the 27th ACM SIGKDD Conference on Knowledge Discovery \& Data Mining},
+  pages={1791--1800},
   year={2021}
 }
 ```
+
 
 
 
